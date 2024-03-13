@@ -11,7 +11,7 @@ const userSchema = new Schema({
     type: String,
     unique: true,
     required: true,
-    match: /^([a-z0-9\._-]+)@([a-z0-9\.-]+)\.([a-z]{2,6})$/,
+    match: /^([a-z0-9\._-]+)@([a-z0-9\.-]+)\.([a-z]{2,6})$/i,
   },
   thoughts: {
     type: [{
