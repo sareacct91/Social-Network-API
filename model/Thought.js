@@ -9,7 +9,7 @@ const thoughtSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: () => Date.now,
+    default: Date.now,
     get: (v) => v.toLocaleString(),
   },
   username: {
