@@ -1,6 +1,7 @@
 const connection = require('../../config/connection');
 const { Thought, User } = require('../../model');
-const {getRandomUser, getReaction, randomPick, getThought } = require('./data');
+const { getRandomUser, getReaction, randomPick, getThought } = require('./data');
+const {ObjectId} = require('mongoose').Types
 
 async function seed(req, res) {
   // drop all collections in db
@@ -19,7 +20,7 @@ async function seed(req, res) {
   }
 
 
-  const thoughts = new Array(20);
+  const thoughts = new Array(100);
 
   for (let i = 0; i < thoughts.length; i++) {
     const thoughtText = getThought();
@@ -36,10 +37,21 @@ async function seed(req, res) {
     thoughts[i] = { thoughtText, username, reactions };
   }
 
-  const thoughtData = await Thought.create(thoughts);
-  const userData = await User.create(users);
+  const thoughtsData = await Thought.create(thoughts);
+  const usersData = await User.create(users);
 
-  res.status(201).json({ msg: 'seeded', thoughtData, userData });
+
+  thoughtsData.forEach(async (t) => {
+    const i = usersData.findIndex((u) => u.username === t.username);
+    await usersData[i].updateOne({ $push: { thoughts: new ObjectId(t._id) } });
+  })
+
+  usersData.forEach(async (u, i) => {
+    i = i === usersData.length - 1 ? 0 : i + 1;
+    await u.updateOne({ $push: { friends: new ObjectId(usersData[i]._id) } });
+  })
+
+  res.status(201).json({ msg: 'seeded', thoughtsData, usersData });
 }
 
 module.exports = seed;

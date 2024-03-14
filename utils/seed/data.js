@@ -1,3 +1,5 @@
+const { User } = require('../../model');
+
 const names = [
   'Aaran',
   'Aaren',
@@ -149,7 +151,7 @@ const thoughtTexts = [
 ];
 
 /**
-  @param {string[]|import("../typedef").user[]} arr
+  @param {string[]|import("../typedef").user[]|User} arr
  */
 const randomPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
