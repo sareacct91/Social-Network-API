@@ -11,13 +11,14 @@ module.exports = {
 
   async findOneUser(req, res) {
     /**@type {string} */
-    const id = req.params.id;
+    const id = req.params.userId;
 
     const user = await User.findById(new ObjectId(id), {},  {populate: ['thoughts', 'friends']})
     res.status(200).json({ msg: 'sucess', user });
   },
 
   async createUser(req, res) {
+    /**@type {{username: string, email: string}} */
     const { username, email } = req.body;
 
     if (!(username && email)) {
@@ -29,22 +30,32 @@ module.exports = {
   },
 
   async updateUser(req, res) {
+    /**@type {{username: string, email: string}} */
     const { username, email } = req.body;
+    
     /**@type {string} */
-    const id = req.params.id;
+    const id = req.params.userId;
 
     if (!(username || email)) {
       throw new BadRequestError('No data to update');
     }
 
-    const user = await User.findByIdAndUpdate(new ObjectId(id), { username, email }, { new: true });
+    const user = await User.findByIdAndUpdate(new ObjectId(id), { username, email });
+
+    if (!user) {
+      throw new NotFoundError(`no user found with id ${id}`);
+    }
+
+    if (username) {
+      await Thought.updateMany({ username: user.username }, { username });
+    }
 
     res.status(201).json({ msg: 'updated', user });
   },
 
   async deleteUser(req, res) {
     /**@type {string} */
-    const id = req.params.id;
+    const id = req.params.userId;
 
     const userResult = await User.findByIdAndDelete(new ObjectId(id))
 
