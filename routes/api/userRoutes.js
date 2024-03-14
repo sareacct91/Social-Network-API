@@ -5,7 +5,7 @@ router.route('/')
   .get(c.findUsers)
   .post(c.createUser)
 
-router.route('/:id')
+router.route('/:userId')
   .get(c.findOneUser)
   .put(c.updateUser)
   .delete(c.deleteUser)
