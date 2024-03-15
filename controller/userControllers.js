@@ -1,14 +1,21 @@
 const { User, Thought } = require('../model');
 const { ObjectId } = require('mongoose').Types;
-const { BadRequestError } = require('../utils/errors');
-const NotFoundError = require('../utils/errors/NotFoundError');
+const { BadRequestError, NotFoundError } = require('../utils/errors');
 
 module.exports = {
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async findUsers(req, res) {
     const users = await User.find();
     res.status(200).json({ msg: 'success', users });
   },
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async findOneUser(req, res) {
     /**@type {string} */
     const id = req.params.userId;
@@ -17,6 +24,10 @@ module.exports = {
     res.status(200).json({ msg: 'sucess', user });
   },
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async createUser(req, res) {
     /**@type {{username: string, email: string}} */
     const { username, email } = req.body;
@@ -29,10 +40,14 @@ module.exports = {
     res.status(201).json({ msg: 'created', user });
   },
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async updateUser(req, res) {
     /**@type {{username: string, email: string}} */
     const { username, email } = req.body;
-    
+
     /**@type {string} */
     const id = req.params.userId;
 
@@ -53,6 +68,10 @@ module.exports = {
     res.status(201).json({ msg: 'updated', user });
   },
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async deleteUser(req, res) {
     /**@type {string} */
     const id = req.params.userId;
