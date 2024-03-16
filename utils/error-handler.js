@@ -1,8 +1,15 @@
 const { ValidationError } = require('mongoose').MongooseError;
 
+/**
+ *
+ * @param {*} err error object of different types
+ * @param {import('express').Request} req express request object
+ * @param {import('express').Response} res express response object
+ * @param {function} next call the next middleware
+ */
 function errorHandler(err, req, res, next) {
   console.log('\nerror handler\n\n');
-  console.error(err, '\n', err.keyValue);
+  console.error(err, '\n');
   // console.error(err instanceof ValidationError);
 
   const customError = {
@@ -13,6 +20,11 @@ function errorHandler(err, req, res, next) {
   if (err.codeName === 'DuplicateKey') {
     customError.statusCode = 400;
     customError.msg = `${Object.keys(err.keyValue)} already exist : ${Object.values(err.keyValue)}`
+  }
+
+  if (err instanceof ValidationError) {
+    customError.statusCode = 400;
+    customError.msg = `${Object.keys(err.errors)} is not valid. Try again`
   }
 
   console.log('\n', customError);
