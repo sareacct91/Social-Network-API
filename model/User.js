@@ -1,4 +1,5 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
+const Thought = require('./Thought');
 
 const userSchema = new Schema({
   username: {
@@ -37,7 +38,18 @@ userSchema.virtual('friendCount')
     return this.friends.length;
   })
 
-const User = model('user', userSchema);
+userSchema.post('findOneAndUpdate', async function (doc) {
+  if (doc) {
+    await Thought.updateMany({ _id: { $in: doc.thoughts } }, { username: doc.username });
+  }
+})
 
+userSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await Thought.deleteMany({ _id: { $in: doc.thoughts } });
+  }
+})
+
+const User = model('user', userSchema);
 
 module.exports = User;
