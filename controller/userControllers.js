@@ -17,7 +17,6 @@ module.exports = {
    * @param {import('express').Response} res
    */
   async findOneUser(req, res) {
-    /**@type {string} */
     const id = req.params.userId;
 
     const user = await User.findById(new ObjectId(id), {},  {populate: ['thoughts', 'friends']})
@@ -48,21 +47,16 @@ module.exports = {
     /**@type {{username: string, email: string}} */
     const { username, email } = req.body;
 
-    /**@type {string} */
     const id = req.params.userId;
 
     if (!(username || email)) {
       throw new BadRequestError('No data to update');
     }
 
-    const user = await User.findByIdAndUpdate(new ObjectId(id), { username, email });
+    const user = await User.findByIdAndUpdate(id, { username, email }, {new: true});
 
     if (!user) {
       throw new NotFoundError(`no user found with id ${id}`);
-    }
-
-    if (username) {
-      await Thought.updateMany({ username: user.username }, { username });
     }
 
     res.status(201).json({ msg: 'updated', user });
@@ -73,7 +67,6 @@ module.exports = {
    * @param {import('express').Response} res
    */
   async deleteUser(req, res) {
-    /**@type {string} */
     const id = req.params.userId;
 
     const userResult = await User.findByIdAndDelete(new ObjectId(id))
@@ -82,11 +75,38 @@ module.exports = {
       throw new NotFoundError(`no user found with id ${id}`);
     }
 
-    if (userResult.thoughts.length > 0) {
-      const username = userResult.username;
-      await Thought.deleteMany({ username });
+    res.status(200).json({ msg: 'deleted'});
+  },
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async addFriend(req, res) {
+    const { userId, friendId } = req.params;
+
+    const user = await User.findByIdAndUpdate(userId, { $push: { friends: friendId } }, { new: true, populate: ['thoughts', 'friends'] });
+
+    if (!user) {
+      throw new NotFoundError(`No user found with id ${userId}`);
     }
 
-    res.status(200).json({ msg: 'deleted'});
-  }
+    res.status(200).json({ msg: 'success', user });
+  },
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async deleteFriend(req, res) {
+    const { userId, friendId } = req.params;
+
+    const user = await User.findByIdAndUpdate(userId, { $pull: { friends: friendId } }, { new: true, populate: ['throughts', 'friends'] });
+
+    if (!user) {
+      throw new NotFoundError(`No user found with id ${userId}`);
+    }
+
+    res.status(200).json({ msg: 'success', user });
+  },
 };
