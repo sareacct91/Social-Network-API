@@ -60,7 +60,7 @@ function getThoughtObject(users) {
     const username = /**@type {type.user}*/(randomPick(users)).username;
 
     /**@type {type.reaction[]}*/
-    const reactions = new Array(20);
+    const reactions = new Array(5);
 
     for (let i = 0; i < reactions.length; i++) {
       const reactionBody = getReaction();
