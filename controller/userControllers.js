@@ -53,7 +53,7 @@ module.exports = {
       throw new BadRequestError('No data to update');
     }
 
-    const user = await User.findByIdAndUpdate(id, { username, email }, {new: true});
+    const user = await User.findByIdAndUpdate(id, { username, email }, {new: true, runValidators: true});
 
     if (!user) {
       throw new NotFoundError(`no user found with id ${id}`);
