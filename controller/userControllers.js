@@ -12,6 +12,7 @@ module.exports = {
     res.status(200).json({ msg: 'success', users });
   },
 
+
   /**
    * @param {import('express').Request} req
    * @param {import('express').Response} res
@@ -22,6 +23,7 @@ module.exports = {
     const user = await User.findById(new ObjectId(id), {},  {populate: ['thoughts', 'friends']})
     res.status(200).json({ msg: 'sucess', user });
   },
+
 
   /**
    * @param {import('express').Request} req
@@ -38,6 +40,7 @@ module.exports = {
     const user = await User.create({ username, email });
     res.status(201).json({ msg: 'created', user });
   },
+
 
   /**
    * @param {import('express').Request} req
@@ -62,6 +65,7 @@ module.exports = {
     res.status(201).json({ msg: 'updated', user });
   },
 
+
   /**
    * @param {import('express').Request} req
    * @param {import('express').Response} res
@@ -78,6 +82,7 @@ module.exports = {
     res.status(200).json({ msg: 'deleted'});
   },
 
+
   /**
    * @param {import('express').Request} req
    * @param {import('express').Response} res
@@ -93,6 +98,7 @@ module.exports = {
 
     res.status(200).json({ msg: 'success', user });
   },
+
 
   /**
    * @param {import('express').Request} req

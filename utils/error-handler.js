@@ -1,7 +1,6 @@
 const { ValidationError } = require('mongoose').MongooseError;
 
 /**
- *
  * @param {*} err error object of different types
  * @param {import('express').Request} req express request object
  * @param {import('express').Response} res express response object
@@ -10,7 +9,6 @@ const { ValidationError } = require('mongoose').MongooseError;
 function errorHandler(err, req, res, next) {
   console.log('\nerror handler\n\n');
   console.error(err, '\n');
-  // console.error(err instanceof ValidationError);
 
   const customError = {
     msg: err.message || 'Something went wrong. Try again later.',
@@ -27,7 +25,6 @@ function errorHandler(err, req, res, next) {
     customError.msg = `${Object.keys(err.errors)} is not valid. Try again`
   }
 
-  console.log('\n', customError);
   res.status(customError.statusCode).json({ msg: customError.msg });
 };
 
