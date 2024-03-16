@@ -5,6 +5,6 @@ module.exports = class BadRequestError extends Error {
   constructor(msg) {
     super(msg);
     /**@type {number} */
-    this.code = 400;
+    this.statusCode = 400;
   }
 }

@@ -3,6 +3,6 @@ module.exports = class NotFoundError extends Error {
   constructor(msg) {
     super(msg);
     /**@type {number} http status code */
-    this.code = 404;
+    this.statusCode = 404;
   }
 }
