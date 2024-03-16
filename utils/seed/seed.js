@@ -4,11 +4,13 @@ const { getRandomUser, getReaction, randomPick, getThought } = require('./data')
 const { ObjectId } = require('mongoose').Types
 const type = require('../typedef');
 
-
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 async function seed(req, res) {
   // drop all collections in db
   (await connection.db.listCollections().toArray()).map((e) => e.name).forEach((e) => connection.dropCollection(e));
-
 
   const users = getUsersObject();
   const thoughts = getThoughtObject(users);
@@ -71,7 +73,5 @@ function getThoughtObject(users) {
   }
   return thoughts;
 }
-
-
 
 module.exports = seed;
