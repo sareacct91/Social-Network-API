@@ -1,5 +1,4 @@
 const { User, Thought } = require('../model');
-const { ObjectId } = require('mongoose').Types;
 const { BadRequestError, NotFoundError } = require('../utils/errors');
 
 module.exports = {
@@ -20,7 +19,12 @@ module.exports = {
   async findOneUser(req, res) {
     const id = req.params.userId;
 
-    const user = await User.findById(new ObjectId(id), {},  {populate: ['thoughts', 'friends']})
+    const user = await User.findById(
+      id,
+      null,
+      { populate: ['thoughts', 'friends'] }
+    );
+
     res.status(200).json({ msg: 'sucess', user });
   },
 
@@ -38,6 +42,7 @@ module.exports = {
     }
 
     const user = await User.create({ username, email });
+
     res.status(201).json({ msg: 'created', user });
   },
 
@@ -56,7 +61,11 @@ module.exports = {
       throw new BadRequestError('No data to update');
     }
 
-    const user = await User.findByIdAndUpdate(id, { username, email }, {new: true, runValidators: true});
+    const user = await User.findByIdAndUpdate(
+      id,
+      { username, email },
+      { new: true, runValidators: true }
+    );
 
     if (!user) {
       throw new NotFoundError(`no user found with id ${id}`);
@@ -73,7 +82,7 @@ module.exports = {
   async deleteUser(req, res) {
     const id = req.params.userId;
 
-    const userResult = await User.findByIdAndDelete(new ObjectId(id))
+    const userResult = await User.findByIdAndDelete(id)
 
     if (!userResult) {
       throw new NotFoundError(`no user found with id ${id}`);
@@ -90,7 +99,11 @@ module.exports = {
   async addFriend(req, res) {
     const { userId, friendId } = req.params;
 
-    const user = await User.findByIdAndUpdate(userId, { $push: { friends: friendId } }, { new: true, populate: ['thoughts', 'friends'] });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $push: { friends: friendId } },
+      { new: true, populate: ['thoughts', 'friends'] }
+    );
 
     if (!user) {
       throw new NotFoundError(`No user found with id ${userId}`);
@@ -107,7 +120,11 @@ module.exports = {
   async deleteFriend(req, res) {
     const { userId, friendId } = req.params;
 
-    const user = await User.findByIdAndUpdate(userId, { $pull: { friends: friendId } }, { new: true, populate: ['throughts', 'friends'] });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { friends: friendId } },
+      { new: true, populate: ['thoughts', 'friends'] }
+    );
 
     if (!user) {
       throw new NotFoundError(`No user found with id ${userId}`);

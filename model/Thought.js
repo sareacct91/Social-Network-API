@@ -32,7 +32,9 @@ thoughtSchema.virtual('reactionCount')
 
 thoughtSchema.post('findOneAndDelete', async function (doc) {
   if (doc) {
-    await model('user').findOneAndUpdate({username: doc.username}, {$pull: {thoughts: doc._id}})
+    await model('user').findOneAndUpdate(
+      { username: doc.username },
+      { $pull: { thoughts: doc._id } })
   }
 })
 

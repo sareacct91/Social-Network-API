@@ -39,9 +39,18 @@ userSchema.virtual('friendCount')
 
 userSchema.post('findOneAndUpdate', async function (doc) {
   if (doc && doc.thoughts.length) {
-    const oldUsername = (await model('thought').findById(doc.thoughts[0])).username;
-    const q1 = model('thought').updateMany({ _id: { $in: doc.thoughts } }, { username: doc.username }).exec();
-    const q2 = model('thought').updateMany({ 'reactions.username': oldUsername }, { $set: { 'reactions.$[element].username': doc.username } }, {arrayFilters: [{'element.username': oldUsername}]}).exec();
+    const oldUsername = (await model('thought').findById(doc.thoughts[0]))?.username;
+
+    const q1 = model('thought').updateMany(
+      { _id: { $in: doc.thoughts } },
+      { username: doc.username }
+    ).exec();
+
+    const q2 = model('thought').updateMany(
+      { 'reactions.username': oldUsername },
+      { $set: { 'reactions.$[element].username': doc.username } },
+      { arrayFilters: [{ 'element.username': oldUsername }] }
+    ).exec();
 
     const [res1, res2] = await Promise.all([q1, q2]);
     console.log(res1, res2);
