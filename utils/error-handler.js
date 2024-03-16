@@ -1,4 +1,4 @@
-const { ValidationError } = require('mongoose').MongooseError;
+const { ValidationError, CastError } = require('mongoose').MongooseError;
 
 /**
  * @param {*} err error object of different types
@@ -23,6 +23,11 @@ function errorHandler(err, req, res, next) {
   if (err instanceof ValidationError) {
     customError.statusCode = 400;
     customError.msg = `${Object.keys(err.errors)} is not valid. Try again`
+  }
+
+  if (err instanceof CastError) {
+    customError.statusCode = 400;
+    customError.msg = `${err.value} is not a valid ObjectId string. Try again with the correct string`;
   }
 
   res.status(customError.statusCode).json({ msg: customError.msg });
