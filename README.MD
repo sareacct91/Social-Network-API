@@ -46,7 +46,7 @@ For Thought routes
 - ```post /api/thoughts``` create a new thought with the provided informations ```(thoughtText, username, userId)```
 - ```get /api/thoughts/:id``` get specific thought
 - ```put /api/thoughts/:id``` update specifc thought's information ```(thoughtText)```
-- ```delete /api/thoughts/:id``` delete specifc thought
+- ```delete /api/thoughts/:id``` delete specifc thought and remove it from associated user as well.
 - ```post /api/thoughts/:id/reactions``` add a reaction to specific thought ```(reactionBody and username)```
 - ```delete /api/thoughts/:id/reactions``` delete a reaction from specifc thought ```(reactionId)```
 
