@@ -4,6 +4,8 @@
 
 An express app to manage users, thoughts, and reactions using mongodb server with mongoose as the ORM
 
+[Video Submission](https://www.youtube.com/watch?v=5P95M_YoonQ)
+
 ## Table of Contents
 
 - [Installation](#installation)
