@@ -25,6 +25,10 @@ module.exports = {
       { populate: ['thoughts', 'friends'] }
     );
 
+    if (!user) {
+      throw new NotFoundError(`no user found with id ${id}`);
+    }
+
     res.status(200).json({ msg: 'sucess', user });
   },
 
