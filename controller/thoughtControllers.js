@@ -151,6 +151,10 @@ module.exports = {
       throw new BadRequestError(`No thought found with id ${thoughtId}`);
     }
 
+    if (!thought.isModified()) {
+      throw new BadRequestError(`No reaction found with id ${reactionId}`);
+    }
+
     res.status(200).json({ msg: 'success' });
   },
 };
