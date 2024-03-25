@@ -20,6 +20,7 @@ const thoughtSchema = new Schema({
 }, {
   toJSON: {
     virtuals: true,
+    getters: true,
   },
   id: false,
 });
@@ -29,7 +30,6 @@ thoughtSchema.virtual('reactionCount')
     return this.reactions.length;
   });
 
-
 thoughtSchema.post('findOneAndDelete', async function (doc) {
   if (doc) {
     await model('user').findOneAndUpdate(
@@ -37,7 +37,6 @@ thoughtSchema.post('findOneAndDelete', async function (doc) {
       { $pull: { thoughts: doc._id } })
   }
 })
-
 
 const Thought = model('thought', thoughtSchema);
 
