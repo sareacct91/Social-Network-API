@@ -116,7 +116,7 @@ module.exports = {
     );
 
     if (!thought) {
-      throw new BadRequestError(`No Thought found with id ${id}`);
+      throw new NotFoundError(`No Thought found with id ${id}`);
     }
 
     res.status(200).json({msg: 'success', thought})
@@ -128,31 +128,26 @@ module.exports = {
    * @param {import('express').Response} res express response object
    */
   async deleteReaction(req, res) {
-    /**@type {{reactionId: string}} */
-    const { reactionId } = req.body;
-    const { thoughtId } = req.params;
+    const { thoughtId, reactionId } = req.params;
 
     if (!reactionId) {
       throw new BadRequestError('Missing reactionId');
     }
 
-    // const thought = await Thought.findByIdAndUpdate(
-    //   thoughtId,
-    //   { $pull: { 'reactions.$[element]': reactionId } },
-    //   { arrayFilters: [{ 'element.reactionId': reactionId }] }
-    // );
-
     const thought = await Thought.findByIdAndUpdate(
       thoughtId,
-      { $pull: { reactions: {reactionId} } },
+      { $pull: { reactions: { reactionId } } },
+      {new: true}
     );
 
+    console.log(thought.$isDeleted());
+
     if (!thought) {
-      throw new BadRequestError(`No thought found with id ${thoughtId}`);
+      throw new NotFoundError(`No thought found with id ${thoughtId}`);
     }
 
     if (!thought.isModified()) {
-      throw new BadRequestError(`No reaction found with id ${reactionId}`);
+      throw new NotFoundError(`No reaction found with id ${reactionId}`);
     }
 
     res.status(200).json({ msg: 'success' });
