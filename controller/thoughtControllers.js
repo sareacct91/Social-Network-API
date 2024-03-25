@@ -130,24 +130,31 @@ module.exports = {
   async deleteReaction(req, res) {
     const { thoughtId, reactionId } = req.params;
 
-    if (!reactionId) {
-      throw new BadRequestError('Missing reactionId');
-    }
-
-    const thought = await Thought.findByIdAndUpdate(
+    const thought = await Thought.findById(
       thoughtId,
-      { $pull: { reactions: { reactionId } } },
-      {new: true}
-    );
-
-    console.log(thought.$isDeleted());
+      'reactions',
+    )
 
     if (!thought) {
       throw new NotFoundError(`No thought found with id ${thoughtId}`);
     }
 
-    if (!thought.isModified()) {
+    const isReaction = thought.reactions.some((e) => e.reactionId.toHexString() === reactionId);
+
+    if (!isReaction) {
       throw new NotFoundError(`No reaction found with id ${reactionId}`);
+    }
+
+    // Use findByIdAndUpdate for the atomicity of the method
+    const updatedThought = await Thought.findByIdAndUpdate(
+      thoughtId,
+      { $pull: { reactions: { reactionId } } },
+      {new: true}
+    );
+
+    // Incase the thought got delete between the 1st find and the 2nd find.
+    if (!updatedThought) {
+      throw new NotFoundError(`No thought found with id ${thoughtId}`);
     }
 
     res.status(200).json({ msg: 'success' });
