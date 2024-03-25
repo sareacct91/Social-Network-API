@@ -124,20 +124,24 @@ module.exports = {
   async deleteFriend(req, res) {
     const { userId, friendId } = req.params;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { friends: friendId } },
-      { new: true, populate: ['thoughts', 'friends'] }
-    );
+    const user = await User.findById(userId, 'friends');
 
     if (!user) {
       throw new NotFoundError(`No user found with id ${userId}`);
     }
 
-    if (!user.isModified()) {
+    const isFriend = user.friends.some(e => e._id.toHexString() === friendId);
+
+    if (!isFriend) {
       throw new NotFoundError(`No friend found with id ${friendId}`);
     }
 
-    res.status(200).json({ msg: 'success', user });
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { friends: friendId } },
+      { new: true, populate: ['thoughts', 'friends'] }
+    );
+
+    res.status(200).json({ msg: 'success', updatedUser });
   },
 };
