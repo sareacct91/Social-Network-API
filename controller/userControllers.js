@@ -134,6 +134,10 @@ module.exports = {
       throw new NotFoundError(`No user found with id ${userId}`);
     }
 
+    if (!user.isModified()) {
+      throw new NotFoundError(`No friend found with id ${friendId}`);
+    }
+
     res.status(200).json({ msg: 'success', user });
   },
 };
